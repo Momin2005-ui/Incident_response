@@ -21,13 +21,32 @@ public class LoginService {
         log.info("REGISTER_SUCCESS userId={} email={}", saved.getUserId(), saved.getPassword());
     }
 
-    public boolean checkUser(String username) {
+    public boolean checkUser(String username,String password) {
         Optional<Users> user = loginRepo.findByName(username);
         if (user.isPresent()) {
-            log.info("LOGIN_SUCCESS username={} userId={}", username, user.get().getUserId());
-            return true;
+            System.out.println(user);
+            Users us =user.get();
+            if(us.getPassword().equals(password)){
+                log.info("LOGIN_SUCCESS username={} userId={}", username, user.get().getUserId());
+                return true;
+            }
+            else{
+                log.info("LOGIN_FAILED_PASSWORD_MISMATCH username={} userId={}", username, user.get().getUserId());
+                return false;
+            }
         } else {
             log.warn("LOGIN_FAILED_USER_NOT_FOUND username={}", username);
+            return false;
+        }
+    }
+
+    public boolean checkIsUserRegistered(String username){
+        Optional<Users> user = loginRepo.findByName(username);
+        if (user.isPresent()) {
+            log.info("USER_ALREADY_REGISTERD username={} userId={}", username, user.get().getUserId());
+            return true;
+        } else {
+            log.warn("SUCCESSFULLY_REGISTERED username={}", username);
             return false;
         }
     }

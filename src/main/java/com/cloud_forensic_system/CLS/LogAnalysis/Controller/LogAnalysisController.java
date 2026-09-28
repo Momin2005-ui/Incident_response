@@ -2,8 +2,10 @@ package com.cloud_forensic_system.CLS.LogAnalysis.Controller;
 
 import com.cloud_forensic_system.CLS.LogAnalysis.Model.Anomaly;
 import com.cloud_forensic_system.CLS.LogAnalysis.Model.Template;
+import com.cloud_forensic_system.CLS.LogAnalysis.Model.WorkflowAnomaly;
 import com.cloud_forensic_system.CLS.LogAnalysis.Repository.AnomalyRepository;
 import com.cloud_forensic_system.CLS.LogAnalysis.Repository.TemplateRepository;
+import com.cloud_forensic_system.CLS.LogAnalysis.Repository.WorkflowAnomalyRepository;
 import com.cloud_forensic_system.CLS.LogAnalysis.Service.LogAnalysisService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ public class LogAnalysisController {
     private final LogAnalysisService logAnalysisService;
     private final TemplateRepository templateRepository;
     private final AnomalyRepository anomalyRepository;
+    private final WorkflowAnomalyRepository workflowAnomalyRepository;
     private static final Logger logger = LoggerFactory.getLogger(LogAnalysisController.class);
 
     @PostMapping("/simulate-incident")
@@ -76,6 +79,11 @@ public class LogAnalysisController {
         return ResponseEntity.ok(anomalyRepository.findAllByOrderByWindowStartDesc());
     }
     
+    @GetMapping("/workflow-anomalies")
+    public ResponseEntity<List<WorkflowAnomaly>> getWorkflowAnomalies() {
+        return ResponseEntity.ok(workflowAnomalyRepository.findAllByOrderByStartTimeDesc());
+    }
+
     @GetMapping("/stats/compression")
     public ResponseEntity<?> getCompressionStats() {
         // Mock compression stats for now, as exact calculation requires 

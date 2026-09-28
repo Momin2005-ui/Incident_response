@@ -24,6 +24,12 @@ public class Login {
          String username = query.get("name");
          String password =query.get("password");
 
+        boolean bl = loginService.checkIsUserRegistered(username);
+
+        if(bl){
+            return new ResponseEntity<>("user already present",HttpStatus.BAD_REQUEST);
+        }
+
         Users user = new Users();
         user.setName(username);
         user.setPassword(password);
@@ -40,16 +46,17 @@ public class Login {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String,String> query){
-        String username =query.get("username");
+        String username =query.get("name");
         String password =query.get("password");
 
         try{
-           boolean bl = loginService.checkUser(username);
+           boolean bl = loginService.checkUser(username,password);
+           System.out.println(bl);
            if(bl){
                return new ResponseEntity<>("User found",HttpStatus.FOUND);
            }
            else{
-               return new ResponseEntity<>("User not found",HttpStatus.NOT_FOUND);
+               return new ResponseEntity<>("User not found CHECK password and username",HttpStatus.NOT_FOUND);
            }
         } catch (RuntimeException e) {
             throw new RuntimeException(e);

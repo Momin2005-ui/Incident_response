@@ -1,84 +1,80 @@
-const API_URL = "http://localhost:8080/api";
+const API_URL = "/api";
 
-// Login
-async function login(username, password) {
-    try {
-    console.log("hi")
-        const response = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log("Login successful:", data);
-            alert("Login successful!");
-
-            // Example: redirect after successful login
-            // window.location.href = "home.html";
-        } else {
-            console.error("Login failed:", data);
-            alert(data.message || "Invalid username or password");
-        }
-
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Unable to connect to the server.");
+// ── Helper: show alert inside the page instead of browser alert() ──
+function showAlert(message, type = "danger") {
+    const box = document.getElementById("alert-box");
+    if (box) {
+        box.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
     }
 }
 
+// ── Login ──
+async function login(username, password) {
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
 
-// Register
-async function register(username, password) {
+        const text = await response.text();
+
+        if (response.status === 302 || response.ok) {
+            showAlert("Login successful! Redirecting...", "success");
+            setTimeout(() => { window.location.href = "/dashboard.html"; }, 1000);
+        } else {
+            showAlert(text || "Invalid username or password.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showAlert("Unable to connect to the server.");
+    }
+}
+
+// ── Register ──
+async function register(name, password) {
     try {
         const response = await fetch(`${API_URL}/register`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, password })
         });
 
-        const data = await response.json();
+        const text = await response.text();
 
-        if (response.ok) {
-            console.log("Registration successful:", data);
-            alert("Registration successful!");
+        if (response.status === 201 || response.ok) {
+            showAlert("Registration successful! Redirecting to login...", "success");
+            setTimeout(() => { window.location.href = "/login.html"; }, 1200);
         } else {
-            console.error("Registration failed:", data);
-            alert(data.message || "Registration failed");
+            showAlert(text || "Registration failed. Please try again.");
         }
-
     } catch (error) {
         console.error("Error:", error);
-        alert("Unable to connect to the server.");
+        showAlert("Unable to connect to the server.");
     }
 }
 
+// ── Attach Login form listener ──
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        login(username, password);
+    });
+}
 
-// Login form
-const loginForm = document.querySelector("form");
-
-loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const username = document.querySelector(
-        'input[name="username"]'
-    ).value;
-
-    const password = document.querySelector(
-        'input[name="password"]'
-    ).value;
-
-    login(username, password);
-});
+// ── Attach Register form listener ──
+const registerForm = document.getElementById("registerForm");
+if (registerForm) {
+    registerForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const name = document.getElementById("registerUsername").value.trim();
+        const password = document.getElementById("registerPassword").value;
+        register(name, password);
+    });
+}

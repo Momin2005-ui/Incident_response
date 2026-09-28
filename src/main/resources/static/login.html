@@ -1,15 +1,44 @@
-<form id="loginForm">
-    <label>Username:</label>
-    <input type="text" id="loginUsername">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - CLS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { margin-top: 100px; max-width: 400px; margin-left: auto; margin-right: auto; }
+    </style>
+</head>
+<body>
 
-    <br><br>
+<div class="card shadow">
+    <div class="card-body p-4">
+        <h3 class="card-title text-center mb-4">Cloud Log System</h3>
+        <h5 class="text-center text-muted mb-4">Login</h5>
 
-    <label>Password:</label>
-    <input type="password" id="loginPassword">
+        <div id="alert-box"></div>
 
-    <br><br>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="loginUsername" class="form-label">Username</label>
+                <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter username" required>
+            </div>
+            <div class="mb-3">
+                <label for="loginPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter password" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
 
-    <button type="submit">Login</button>
-</form>
+        <p class="text-center mt-3 mb-0">
+            Don't have an account? <a href="register.html">Register</a>
+        </p>
+    </div>
+</div>
 
 <script src="/script.js"></script>
+</body>
+</html>
